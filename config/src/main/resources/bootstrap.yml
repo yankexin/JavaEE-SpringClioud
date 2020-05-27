@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          #          uri: https://github.com/forezp/SpringcloudConfig/
+          uri: https://github.com/25312/ConfigServer/
+          #          配置Git仓库位置
+          searchPaths: respo
+          #          spring_cloud_in_action/config-repo 配置仓库路径下的相对搜索位置，可以配置多个
+          username:
+          #          访问Git仓库的用户名
+          password:
+      #          访问Git仓库的用户名密码
+      label: master
+
+
+server:
+  port: 9200
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://peer1:1122/eureka/
