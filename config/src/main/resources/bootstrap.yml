@@ -1,26 +1,54 @@
 spring:
   application:
-    name: config-server
+    name: scd-config-server-bus
+  profiles:
+    active:
+      - native #使用本地配置
   cloud:
     config:
       server:
-        git:
-          #          uri: https://github.com/forezp/SpringcloudConfig/
-          uri: https://github.com/25312/ConfigServer/
-          #          配置Git仓库位置
-          searchPaths: respo
-          #          spring_cloud_in_action/config-repo 配置仓库路径下的相对搜索位置，可以配置多个
-          username:
-          #          访问Git仓库的用户名
-          password:
-      #          访问Git仓库的用户名密码
-      label: master
-
-
+        bootstrap: true
+        native:
+          search-locations:
+            - classpath:config-repo/ # 搜索src/main/resource 下的config-repo文件夹下的文件
+  # git配置
+  #        git:
+  #          uri: https://github.com/yankexin/JavaEE-SpringCloud
+  #          search-paths:
+  #          - config-repo
+  #          username: username
+  #          password: password
+  #-------------------------------------------------------------------------
+  rabbitmq:
+    host: 192.168.14.231
+    port: 5672
+    username: i5x
+    password: i5xrabbitmq
+    virtual-host: i5x
+#-------------------------------------------------------------------------
+management:
+  #  actuator的端口可以单独定义，如果不定义的话，默认为${server.port}
+  #  server:
+  #    port: 31000
+  endpoints:
+    web:
+      exposure:
+        include: "*" #默认只暴露了/actuator/info和/actuator/health，没有暴露/actuator/bus-refresh，这里把所有endpoints都暴露了
+      cors:
+        allowed-origins: "*"
+        allowed-methods: "*"
+#---------------------------------------------------------------------
 server:
-  port: 9200
-
+  port: 50010
+#---------------------------------------------------------------------
 eureka:
+  instance:
+    prefer-ip-address: true
+    status-page-url-path: /actuator/info
+    health-check-url-path: /actuator/health
+    hostname: localhost
   client:
-    serviceUrl:
-      defaultZone: http://peer1:1122/eureka/
+    register-with-eureka: true #把本服务也注册到注册中心，从注册中心的服务列表中可以看到本服务
+    fetch-registry: true #从注册中心拉取服务列表
+    service-url:
+      defaultZone: http://localhost:50000/eureka/
